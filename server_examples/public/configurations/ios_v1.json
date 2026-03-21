@@ -1,0 +1,29 @@
+{
+  "settings": {
+    "app_name": "ChronoFlow",
+    "base_url": "https://chrono-flow-mvp.onrender.com",
+    "platform": "ios"
+  },
+  "rules": [
+    {
+      "patterns": [
+        ".*"
+      ],
+      "properties": {
+        "context": "default",
+        "pull_to_refresh_enabled": false
+      }
+    },
+    {
+      "patterns": [
+        "/login$",
+        "/signup$"
+      ],
+      "properties": {
+        "context": "default",
+        "presentation": "replace_root",
+        "pull_to_refresh_enabled": false
+      }
+    }
+  ]
+}

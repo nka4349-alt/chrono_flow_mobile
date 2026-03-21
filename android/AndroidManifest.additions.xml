@@ -1,0 +1,5 @@
+<!-- Add above <application> -->
+<uses-permission android:name="android.permission.INTERNET"/>
+
+<!-- Add on <application> -->
+android:name=".MyApplication"

@@ -1,0 +1,34 @@
+{
+  "app_name": "ChronoFlow",
+  "environment": "production",
+  "base_url": "https://chrono-flow-mvp.onrender.com",
+  "start_path": "/",
+  "login_path": "/login",
+  "signup_path": "/signup",
+  "privacy_policy_path": "/privacy",
+  "terms_path": "/terms",
+  "ios_bundle_id": "com.nka4349.chronoflow",
+  "android_package_name": "com.nka4349.chronoflow",
+  "path_configuration": {
+    "ios_remote_url": "https://chrono-flow-mvp.onrender.com/configurations/ios_v1.json",
+    "android_remote_url": "https://chrono-flow-mvp.onrender.com/configurations/android_v1.json"
+  },
+  "review": {
+    "demo_account_required": true,
+    "account_deletion_required": true,
+    "privacy_policy_required": true
+  },
+  "features": {
+    "calendar_views": [
+      "month",
+      "week",
+      "day"
+    ],
+    "groups": true,
+    "friend_requests": true,
+    "group_chat": true,
+    "event_chat": true,
+    "direct_chat": true,
+    "notifications": true
+  }
+}

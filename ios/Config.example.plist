@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>AppName</key>
+  <string>ChronoFlow</string>
+  <key>BaseURL</key>
+  <string>https://chrono-flow-mvp.onrender.com</string>
+  <key>StartPath</key>
+  <string>/</string>
+  <key>LoginPath</key>
+  <string>/login</string>
+  <key>BundleIdentifier</key>
+  <string>com.nka4349.chronoflow</string>
+  <key>RemotePathConfigurationURL</key>
+  <string>https://chrono-flow-mvp.onrender.com/configurations/ios_v1.json</string>
+</dict>
+</plist>

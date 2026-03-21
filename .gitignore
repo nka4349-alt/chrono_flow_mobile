@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# iOS
+DerivedData/
+*.xcworkspace
+xcuserdata/
+
+# Android
+.gradle/
+local.properties
+build/
+.idea/
+
+# Local config
+config/environments.local.json

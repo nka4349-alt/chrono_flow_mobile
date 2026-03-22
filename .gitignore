@@ -14,3 +14,7 @@ build/
 
 # Local config
 config/environments.local.json
+
+android_app/keystore/
+*.jks
+*.keystore

@@ -1,20 +1,41 @@
 package com.nka4349.chronoflow
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.View
+import androidx.core.view.WindowCompat
+import dev.hotwire.navigation.activities.HotwireActivity
+import dev.hotwire.navigation.navigator.NavigatorConfiguration
+import dev.hotwire.navigation.util.applyDefaultImeWindowInsets
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : HotwireActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        hideNativeActionBar()
+
+        // Keep system bars outside the WebView so the mobile chat composer
+        // does not end up under Android's navigation buttons.
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        findViewById<View>(R.id.main_nav_host).applyDefaultImeWindowInsets()
     }
+
+    override fun onResume() {
+        super.onResume()
+        hideNativeActionBar()
+    }
+
+    private fun hideNativeActionBar() {
+        supportActionBar?.hide()
+        actionBar?.hide()
+    }
+
+    override fun navigatorConfigurations() = listOf(
+        NavigatorConfiguration(
+            name = "main",
+            startLocation = "https://chrono-flow-mvp.onrender.com",
+            navigatorHostId = R.id.main_nav_host
+        )
+    )
 }

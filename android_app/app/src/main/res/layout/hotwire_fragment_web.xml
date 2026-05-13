@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hotwire_fragment_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/chronoflow_surface">
 
-    <!-- Override Hotwire Native's default web-fragment layout.
-         The library layout includes AppBarLayout + MaterialToolbar, which
-         shows the native "ChronoFlow" title bar. Keeping only hotwire_view
-         leaves Android's system status/navigation bars intact while removing
-         the native app bar. -->
     <include
         layout="@layout/hotwire_view"
         android:layout_width="match_parent"

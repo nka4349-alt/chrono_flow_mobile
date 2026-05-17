@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+app/build/
+app/release/
+*.apk
+*.aab
+*.jks
+*.keystore
+kotlin-profile/
+wrapper/dists/
+android/FakeDependency.jar

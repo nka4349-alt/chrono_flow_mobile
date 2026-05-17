@@ -1,15 +1,11 @@
 package com.nka4349.chronoflow
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.updatePadding
 import dev.hotwire.navigation.activities.HotwireActivity
 import dev.hotwire.navigation.navigator.NavigatorConfiguration
+import dev.hotwire.navigation.util.applyDefaultImeWindowInsets
 
 class MainActivity : HotwireActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,18 +13,16 @@ class MainActivity : HotwireActivity() {
 
         hideNativeActionBar()
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = Color.TRANSPARENT
-        WindowInsetsControllerCompat(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false
-            isAppearanceLightNavigationBars = false
-        }
+        // v1.0.4 hotfix:
+        // Prefer startup stability over aggressive edge-to-edge behavior.
+        // System bars stay outside the WebView, while the Hotwire web fragment
+        // remains responsible for rendering the Rails screen.
+        WindowCompat.setDecorFitsSystemWindows(window, true)
 
         setContentView(R.layout.activity_main)
+
         findViewById<View>(R.id.main_nav_host).apply {
-            setBackgroundColor(CHRONOFLOW_SURFACE)
-            applyNavigationBarInsets()
+            applyDefaultImeWindowInsets()
         }
     }
 
@@ -42,23 +36,6 @@ class MainActivity : HotwireActivity() {
         actionBar?.hide()
     }
 
-    private fun View.applyNavigationBarInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            view.updatePadding(
-                left = systemBars.left,
-                top = 0,
-                right = systemBars.right,
-                bottom = maxOf(systemBars.bottom, navigationBars.bottom, ime.bottom)
-            )
-            insets
-        }
-        ViewCompat.requestApplyInsets(this)
-    }
-
     override fun navigatorConfigurations() = listOf(
         NavigatorConfiguration(
             name = "main",
@@ -66,8 +43,4 @@ class MainActivity : HotwireActivity() {
             navigatorHostId = R.id.main_nav_host
         )
     )
-
-    private companion object {
-        val CHRONOFLOW_SURFACE: Int = Color.rgb(8, 17, 43)
-    }
 }

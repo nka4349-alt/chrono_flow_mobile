@@ -39,25 +39,27 @@ class MainActivity : HotwireActivity() {
             applyDefaultImeWindowInsets()
         }
 
-        // Install after HotwireActivity's own callback so this app-level policy wins.
-        // The Web app is mostly a single Rails root screen, so URL-only native popping
-        // can expose /login in the previous Hotwire stack. Ask the Web screen first;
-        // when it has nothing to close, background the task instead of popping to login.
         onBackPressedDispatcher.addCallback(this, chronoFlowBackCallback)
     }
 
     override fun onNavigatorReady(navigator: Navigator) {
         super.onNavigatorReady(navigator)
 
-        // Re-register this callback after Hotwire's navigator is ready so the
-        // app-level back policy stays on top of Hotwire's default pop behavior.
+        // Keep this app-level callback above Hotwire's default stack pop.
         chronoFlowBackCallback.remove()
         chronoFlowBackCallback.isEnabled = true
         onBackPressedDispatcher.addCallback(this, chronoFlowBackCallback)
     }
+
     override fun onResume() {
         super.onResume()
         hideNativeActionBar()
+
+        // Android can re-enable framework callbacks after lifecycle changes.
+        // Re-register here so the app-level policy remains the last callback.
+        chronoFlowBackCallback.remove()
+        chronoFlowBackCallback.isEnabled = true
+        onBackPressedDispatcher.addCallback(this, chronoFlowBackCallback)
     }
 
     private fun hideNativeActionBar() {
@@ -81,20 +83,27 @@ class MainActivity : HotwireActivity() {
 
         when {
             isAuthPath(path) -> moveTaskToBack(true)
-            isRootPath(path) -> handleRootBack(navigator)
+
+            // Rails home is mostly a single Web screen. Ask the Web bridge first.
+            // When it has nothing to close, background the app instead of popping
+            // Hotwire's back stack, because that stack may still contain /login.
+            isRootPath(path) -> handleWebBackOrBackground(navigator)
+
+            // Explicit native URL states, if they ever exist.
             isEventAiPath(path) -> routeReplacing(navigator, personalAiLocation)
             isPersonalAiPath(path) -> routeReplacing(navigator, rootLocation)
             isEventPath(path) -> routeReplacing(navigator, rootLocation)
-            isGroupPath(path) && wouldPopToAuth(navigator) -> moveTaskToBack(true)
-            isGroupPath(path) && !navigator.isAtStartDestination() -> navigator.pop()
-            isGroupPath(path) -> moveTaskToBack(true)
-            wouldPopToAuth(navigator) -> moveTaskToBack(true)
-            !navigator.isAtStartDestination() -> navigator.pop()
-            else -> moveTaskToBack(true)
+
+            // Group screens must not pop into login or unexpectedly jump to personal calendar.
+            isGroupPath(path) -> handleWebBackOrBackground(navigator)
+
+            // Safety fallback:
+            // Never call navigator.pop() for Android hardware back.
+            else -> handleWebBackOrBackground(navigator)
         }
     }
 
-    private fun handleRootBack(navigator: Navigator) {
+    private fun handleWebBackOrBackground(navigator: Navigator) {
         if (webBackCheckInFlight) return
         webBackCheckInFlight = true
 
@@ -168,10 +177,6 @@ class MainActivity : HotwireActivity() {
 
     private fun isGroupPath(path: String): Boolean {
         return path.startsWith("/groups/")
-    }
-
-    private fun wouldPopToAuth(navigator: Navigator): Boolean {
-        return isAuthPath(normalizedPath(navigator.previousLocation))
     }
 
     override fun navigatorConfigurations() = listOf(

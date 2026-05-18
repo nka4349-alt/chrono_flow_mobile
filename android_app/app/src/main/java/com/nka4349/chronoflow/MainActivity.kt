@@ -46,6 +46,15 @@ class MainActivity : HotwireActivity() {
         onBackPressedDispatcher.addCallback(this, chronoFlowBackCallback)
     }
 
+    override fun onNavigatorReady(navigator: Navigator) {
+        super.onNavigatorReady(navigator)
+
+        // Re-register this callback after Hotwire's navigator is ready so the
+        // app-level back policy stays on top of Hotwire's default pop behavior.
+        chronoFlowBackCallback.remove()
+        chronoFlowBackCallback.isEnabled = true
+        onBackPressedDispatcher.addCallback(this, chronoFlowBackCallback)
+    }
     override fun onResume() {
         super.onResume()
         hideNativeActionBar()
